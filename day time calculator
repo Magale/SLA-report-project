@@ -1,0 +1,799 @@
+using System;
+using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OMP_SLA_Reporting
+{
+      public class DayCalculator
+        {
+          public static List<DateTime> PublicHolidays = new List<DateTime>() { DateTime.ParseExact("01/01/2019", "dd/MM/yyyy", null), DateTime.ParseExact("21/03/2019", "dd/MM/yyyy", null), DateTime.ParseExact("19/04/2019", "dd/MM/yyyy", null), DateTime.ParseExact("22/04/2019", "dd/MM/yyyy", null), DateTime.ParseExact("27/04/2019", "dd/MM/yyyy", null), DateTime.ParseExact("01/05/2019", "dd/MM/yyyy", null), DateTime.ParseExact("08/05/2019", "dd/MM/yyyy", null), DateTime.ParseExact("16/06/2019", "dd/MM/yyyy", null), DateTime.ParseExact("09/08/2019", "dd/MM/yyyy", null), DateTime.ParseExact("24/09/2019", "dd/MM/yyyy", null), DateTime.ParseExact("16/12/2019", "dd/MM/yyyy", null), DateTime.ParseExact("25/12/2019", "dd/MM/yyyy", null), DateTime.ParseExact("26/12/2019", "dd/MM/yyyy", null), DateTime.ParseExact("01/01/2020", "dd/MM/yyyy", null), DateTime.ParseExact("21/03/2020", "dd/MM/yyyy", null), DateTime.ParseExact("10/04/2020", "dd/MM/yyyy", null), DateTime.ParseExact("13/04/2020", "dd/MM/yyyy", null), DateTime.ParseExact("27/04/2020", "dd/MM/yyyy", null), DateTime.ParseExact("01/05/2020", "dd/MM/yyyy", null), DateTime.ParseExact("16/06/2020", "dd/MM/yyyy", null), DateTime.ParseExact("10/08/2020", "dd/MM/yyyy", null), DateTime.ParseExact("24/09/2020", "dd/MM/yyyy", null), DateTime.ParseExact("16/12/2020", "dd/MM/yyyy", null), DateTime.ParseExact("25/12/2020", "dd/MM/yyyy", null), DateTime.ParseExact("01/01/2021", "dd/MM/yyyy", null), DateTime.ParseExact("22/03/2021", "dd/MM/yyyy", null), DateTime.ParseExact("02/04/2021", "dd/MM/yyyy", null), DateTime.ParseExact("05/04/2021", "dd/MM/yyyy", null), DateTime.ParseExact("27/04/2021", "dd/MM/yyyy", null), DateTime.ParseExact("01/05/2021", "dd/MM/yyyy", null), DateTime.ParseExact("16/06/2021", "dd/MM/yyyy", null), DateTime.ParseExact("09/08/2021", "dd/MM/yyyy", null), DateTime.ParseExact("24/09/2021", "dd/MM/yyyy", null), DateTime.ParseExact("01/11/2021", "dd/MM/yyyy", null), DateTime.ParseExact("16/12/2021", "dd/MM/yyyy", null), DateTime.ParseExact("25/12/2021", "dd/MM/yyyy", null), DateTime.ParseExact("27/12/2021", "dd/MM/yyyy", null), DateTime.ParseExact("01/01/2022", "dd/MM/yyyy", null), DateTime.ParseExact("21/03/2022", "dd/MM/yyyy", null), DateTime.ParseExact("15/04/2022", "dd/MM/yyyy", null), DateTime.ParseExact("18/04/2022", "dd/MM/yyyy", null), DateTime.ParseExact("27/04/2022", "dd/MM/yyyy", null), DateTime.ParseExact("02/05/2022", "dd/MM/yyyy", null), DateTime.ParseExact("16/06/2022", "dd/MM/yyyy", null), DateTime.ParseExact("09/08/2022", "dd/MM/yyyy", null), DateTime.ParseExact("24/09/2022", "dd/MM/yyyy", null), DateTime.ParseExact("16/12/2022", "dd/MM/yyyy", null), DateTime.ParseExact("26/12/2022", "dd/MM/yyyy", null), DateTime.ParseExact("27/12/2022", "dd/MM/yyyy", null), DateTime.ParseExact("01/01/2023", "dd/MM/yyyy", null), DateTime.ParseExact("21/03/2023", "dd/MM/yyyy", null), DateTime.ParseExact("07/04/2023", "dd/MM/yyyy", null), DateTime.ParseExact("10/04/2023", "dd/MM/yyyy", null), DateTime.ParseExact("27/04/2023", "dd/MM/yyyy", null), DateTime.ParseExact("01/05/2023", "dd/MM/yyyy", null), DateTime.ParseExact("16/06/2023", "dd/MM/yyyy", null), DateTime.ParseExact("09/09/2023", "dd/MM/yyyy", null) };
+            public string pubttime(string date)
+            {
+                if (date != "")
+                {
+                    DateTime dat = DateTime.Parse(date.Substring(0, 10));
+                    if (dat.DayOfWeek == DayOfWeek.Saturday)
+                    {
+
+                        date = dat.AddDays(-1).ToString().Substring(0, 10) + " " + "17:01";
+
+                    }
+                    else if (dat.DayOfWeek == DayOfWeek.Sunday)
+                    {
+
+                        date = dat.AddDays(-2).ToString().Substring(0, 10) + " " + "17:01";
+                    }
+                }
+                return date;
+
+            }
+            public string pubtime(string datte)
+            {
+                DateTime dat = DateTime.Parse(datte.Substring(0, 10));
+                if (PublicHolidays.Contains(dat))
+                {
+                  //  MessageBox.Show(date);
+                    datte = datte.Substring(0, 10).Substring(0, 10) + " " + "16:59";
+
+                }
+                return datte;
+            }
+          public static int Weekday(DateTime start, DateTime stop)
+            {
+
+                int days = 0;
+                while (start <= stop)
+                {
+
+                    days++;
+
+                    start = start.AddDays(1);
+                }
+                return days - 2;
+            }
+            public static int Weekdays(DateTime start, DateTime stop, DateTime start1, DateTime stop1)
+            {
+
+                int cmp = 0;
+
+                while (start1 <= stop1)
+                {
+
+                    cmp++;
+
+                    start1 = start1.AddDays(1);
+                }
+                int days = 0;
+
+                if (start.DayOfWeek == DayOfWeek.Saturday && (stop.DayOfWeek == DayOfWeek.Saturday || stop.DayOfWeek == DayOfWeek.Sunday))
+                {
+
+
+                    if ((start.Date == stop.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        days = -3;
+                    }
+                }
+                if (PublicHolidays.Contains(start) && stop.DayOfWeek == DayOfWeek.Saturday && stop.DayOfWeek == DayOfWeek.Sunday)
+                {
+
+
+
+                    if ((start.Date == stop.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        days = -3;
+                    }
+                }
+                if (PublicHolidays.Contains(start) && PublicHolidays.Contains(stop))
+                {
+
+
+
+                    if ((start.Date == stop.Date || (cmp == 1 || cmp == 2)))
+                    {
+
+                        days = -3;
+                    }
+                }
+                if ((start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday) && PublicHolidays.Contains(DateTime.Parse(stop.ToString())))
+                {
+
+
+                    if ((start.Date == stop.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        days = -3;
+                    }
+                }
+                if ((start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday) && (stop.DayOfWeek == DayOfWeek.Monday || stop.DayOfWeek == DayOfWeek.Thursday || stop.DayOfWeek == DayOfWeek.Tuesday || stop.DayOfWeek == DayOfWeek.Wednesday || stop.DayOfWeek == DayOfWeek.Friday))
+                {
+
+                    days = 1;
+
+                }
+                if ((start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday) && (stop.DayOfWeek == DayOfWeek.Saturday || stop.DayOfWeek == DayOfWeek.Sunday || PublicHolidays.Contains(DateTime.Parse(stop.ToString()))))
+                {
+
+                    days = 2;
+
+                }
+                if ((PublicHolidays.Contains(DateTime.Parse(start.ToString()))) && (stop.DayOfWeek == DayOfWeek.Monday || stop.DayOfWeek == DayOfWeek.Thursday || stop.DayOfWeek == DayOfWeek.Tuesday || stop.DayOfWeek == DayOfWeek.Wednesday || stop.DayOfWeek == DayOfWeek.Friday) && days != -3)
+                {
+
+                    days = 1;
+                }
+                if ((PublicHolidays.Contains(DateTime.Parse(start.ToString()))) && (stop.DayOfWeek == DayOfWeek.Saturday || stop.DayOfWeek == DayOfWeek.Sunday || PublicHolidays.Contains(DateTime.Parse(stop.ToString()))))
+                {
+
+                    days = 2;
+                }
+                if ((start.DayOfWeek == DayOfWeek.Monday || start.DayOfWeek == DayOfWeek.Thursday || start.DayOfWeek == DayOfWeek.Tuesday || start.DayOfWeek == DayOfWeek.Wednesday || start.DayOfWeek == DayOfWeek.Friday) && (PublicHolidays.Contains(DateTime.Parse(stop.ToString()))))
+                {
+
+                    days = 1;
+                }
+                if ((start.DayOfWeek == DayOfWeek.Monday || start.DayOfWeek == DayOfWeek.Thursday || start.DayOfWeek == DayOfWeek.Tuesday || start.DayOfWeek == DayOfWeek.Wednesday || start.DayOfWeek == DayOfWeek.Friday) && (stop.DayOfWeek == DayOfWeek.Saturday || stop.DayOfWeek == DayOfWeek.Sunday))
+                {
+
+                    days = 1;
+                }
+                if ((start.DayOfWeek == DayOfWeek.Friday) && PublicHolidays.Contains(DateTime.Parse(start.ToString())) && (stop.DayOfWeek == DayOfWeek.Saturday || stop.DayOfWeek == DayOfWeek.Sunday) && (cmp == 1 || cmp == 2 || cmp == 3))
+                {
+
+                    days = 2;
+                }
+                if ((start.DayOfWeek == DayOfWeek.Friday) && PublicHolidays.Contains(DateTime.Parse(start.ToString())) && (stop.DayOfWeek == DayOfWeek.Monday) && (cmp == 4) && PublicHolidays.Contains(DateTime.Parse(stop.ToString())))
+                {
+
+                    days = 2;
+                }
+                if (((start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday) && stop.DayOfWeek == DayOfWeek.Monday) && (cmp == 1 || cmp == 2))
+                {
+                    days = -2;
+
+                }
+                else if ((PublicHolidays.Contains(start) && start.DayOfWeek == DayOfWeek.Monday && stop.DayOfWeek == DayOfWeek.Tuesday) && (cmp == 1 || cmp == 2) && days != -3)
+                {
+                    days = -2;
+
+                }
+                else if ((PublicHolidays.Contains(start) && start.DayOfWeek == DayOfWeek.Tuesday && stop.DayOfWeek == DayOfWeek.Wednesday) && (cmp == 1 || cmp == 2) && days != -3)
+                {
+                    days = -2;
+
+                }
+                else if ((PublicHolidays.Contains(start) && start.DayOfWeek == DayOfWeek.Wednesday && stop.DayOfWeek == DayOfWeek.Thursday) && (cmp == 1 || cmp == 2) && days != -3)
+                {
+                    days = -2;
+
+                }
+                else if ((PublicHolidays.Contains(start) && start.DayOfWeek == DayOfWeek.Thursday && stop.DayOfWeek == DayOfWeek.Friday) && (cmp == 1 || cmp == 2) && days != -3)
+                {
+                    days = -2;
+
+                }
+                else
+                {
+
+                    while (start <= stop)
+                    {
+                        if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday && !PublicHolidays.Contains(DateTime.Parse(start.ToString())))
+                        {
+                            days += 1;
+                            //MessageBox.Show(start.ToString());
+                        }
+                        start = start.AddDays(1);
+
+                    }
+                }
+                //----------------------------------------//
+                //if (start<stop)
+                //{
+                //    //MessageBox.Show("gd");
+                //    days = -4;
+
+                //}
+                //'''''''''''''''''''''''''''''''''''''''''//
+                return days - 2;
+
+
+            }
+            //-------------------------------------------------------------------//
+            public static string caltime(string start, string stop)
+            {
+
+                DateTime star = DateTime.Parse(@start);
+                DateTime sto = DateTime.Parse(@stop);
+                TimeSpan theTime = sto - star;
+
+                string con = "";
+                int conv = 0;
+                int conve = 0;
+                con = (theTime).ToString();
+                if (con.Substring(0, 1) == "-")
+                {
+                    con = con.Remove(0, 1);
+
+
+                }
+
+                conv = Int32.Parse(con.Substring(0, 2));
+                conve = Int32.Parse(con.Substring(3).Substring(0, 2));
+                return ((conv * 60) + conve).ToString();
+
+            }
+
+            public string givetime1(int ndays, string first, string last, string date1, string date2, string createdate)
+            {
+                DateTime begin = DateTime.ParseExact(date1, "dd/MM/yyyy", null);
+                DateTime end = DateTime.ParseExact(date2, "dd/MM/yyyy", null);
+                DateTime created = DateTime.ParseExact(createdate.Substring(0, 10), "dd/MM/yyyy", null);
+                string creatime = createdate.Substring(11).Substring(0, 5);
+                string result = "";
+
+                int add = 0;
+                TimeSpan tim = end - begin;
+                TimeSpan tiim = end - begin;
+
+                if (end == created)
+                {
+
+                    tim = DateTime.ParseExact(last, "H:mm", null, System.Globalization.DateTimeStyles.None) - DateTime.ParseExact(creatime, "H:mm", null, System.Globalization.DateTimeStyles.None);
+
+                }
+                else
+                {
+                    tim = end - created;
+                }
+                if (end == begin)
+                {
+
+                    tiim = DateTime.ParseExact(last, "H:mm", null, System.Globalization.DateTimeStyles.None) - DateTime.ParseExact(first, "H:mm", null, System.Globalization.DateTimeStyles.None);
+
+                }
+                else
+                {
+                    tiim = end - begin;
+                }
+
+                //MessageBox.Show(tim.ToString());
+                //MessageBox.Show(tim.ToString());
+                if (tiim.ToString().Substring(0, 1) == "-")
+                {
+                    result = "0";
+                }
+                else if (tim.ToString().Substring(0, 1) == "-")
+                {
+                    result = "0";
+                }
+                else if (ndays == -1)
+                {
+                    add = Int32.Parse(caltime(first, last));
+                }
+                else
+                {
+                    add = Int32.Parse(caltime(first, "23:59")) + (Int32.Parse(caltime("00:00", last)) + ((24 * 60) * (ndays))) + 1;
+                }
+                result = add.ToString();
+                return result;
+            }
+            public string givetime(int ndays, int start, int stop, string first, string last, string date1, string date2, string createdate)
+            {
+                string result = "0";
+                DateTime begin1 = DateTime.ParseExact(date1, "dd/MM/yyyy", null);
+                DateTime end1 = DateTime.ParseExact(date2, "dd/MM/yyyy", null);
+                DateTime begin = DateTime.ParseExact(date1, "dd/MM/yyyy", null);
+                DateTime end = DateTime.ParseExact(date2, "dd/MM/yyyy", null);
+                DateTime created = DateTime.ParseExact(createdate.Substring(0, 10), "dd/MM/yyyy", null);
+                string creatime = createdate.Substring(11).Substring(0, 5);
+                int cmp = 0;
+                // MessageBox.Show(begin.ToString());
+                while (begin1 <= end1)
+                {
+
+                    cmp++;
+
+                    begin1 = begin1.AddDays(1);
+
+                }
+
+                int hrdiff = (Int32.Parse(last.Substring(last.Length - 2)) - Int32.Parse(first.Substring(first.Length - 2)));
+                TimeSpan tim = end - begin;
+                TimeSpan tiim = end - begin;
+                if (end == created)
+                {
+
+                    tim = DateTime.ParseExact(last, "H:mm", null, System.Globalization.DateTimeStyles.None) - DateTime.ParseExact(creatime, "H:mm", null, System.Globalization.DateTimeStyles.None);
+
+                }
+                else
+                {
+                    tim = end - created;
+                }
+                //MessageBox.Show(tim.ToString());
+                if (end == begin)
+                {
+
+                    tiim = DateTime.ParseExact(last, "H:mm", null, System.Globalization.DateTimeStyles.None) - DateTime.ParseExact(first, "H:mm", null, System.Globalization.DateTimeStyles.None);
+
+                }
+                else
+                {
+                    tiim = end - begin;
+                }
+
+
+
+                if (tiim.ToString().Substring(0, 1) == "-")
+                {
+                    result = "0";
+                }
+                else if (tim.ToString().Substring(0, 1) == "-")
+                {
+                    result = "0";
+                }
+                else if (begin.Date == end.Date && (stop - start < 0))
+                {
+                    result = "0";
+                }
+                else if (begin.Date == end.Date && (stop == start) && hrdiff < 0)
+                {
+                    result = "0";
+                }
+                else if (PublicHolidays.Contains(begin) && (end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday))
+                {
+
+
+                    if ((begin.Date == end.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        result = "0";
+                    }
+                    else
+                    {
+                        // result = "0";
+                        result = (ndays * 540).ToString();
+                    }
+                }
+
+                else if ((begin.DayOfWeek == DayOfWeek.Sunday || begin.DayOfWeek == DayOfWeek.Saturday) && PublicHolidays.Contains(end))
+                {
+
+
+                    if ((begin.Date == end.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        result = "0";
+                    }
+                    else
+                    {
+                        result = (ndays * 540).ToString();
+                    }
+                }
+                else if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday))
+                {
+
+                    if ((begin.Date == end.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        result = "0";
+                    }
+                    else
+                    {
+
+                        result = (ndays * 540).ToString();
+                    }
+                }
+                else if (PublicHolidays.Contains(begin) && (PublicHolidays.Contains(end)))
+                {
+
+
+                    if ((begin.Date == end.Date || (cmp == 1 || cmp == 2)))
+                    {
+                        result = "0";
+                    }
+                    else
+                    {
+                        result = (ndays * 540).ToString();
+                    }
+                }
+                else if (ndays == -5)
+                {
+
+                    result = "0";
+                }
+                else if (ndays == -4)
+                {
+                    if (stop < 8)
+                    {
+                        result = "0";
+                    }
+                    else if (stop >= 8 && stop < 17)
+                    {
+
+                        result = caltime("08:00", last);
+                    }
+                    else if (stop >= 17)
+                    {
+
+                        result = "540";
+                    }
+
+                }
+                else if (ndays == -1 || ndays == -2)
+                {
+                    if (start < 8 && stop < 8)
+                    {
+
+                        if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday && !PublicHolidays.Contains(begin)))
+                        {
+
+                            result = "540";
+                        }
+                        else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                        {
+                            result = "540";
+                        }
+                        else
+                        {
+
+                            result = "0";
+                        }
+
+                    }
+                    else if (start < 8 && stop >= 8 && stop < 17)
+                    {
+                        if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday && !PublicHolidays.Contains(begin)))
+                        {
+
+                            result = "540";
+                        }
+                        else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                        {
+                            result = "540";
+                        }
+                        else
+                        {
+
+                            result = caltime("08:00", last);
+                        }
+                    }
+                    else if (start < 8 && stop >= 17)
+                    {
+                        if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                        {
+
+                            result = "540";
+                        }
+                        else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                        {
+                            result = "540";
+                        }
+                        else
+                        {
+
+                            result = "540";
+                        }
+
+                    }
+                    else if (start >= 8 && stop >= 8 && stop < 17)
+                    {
+                        if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                        {
+
+                            result = caltime(first, last);
+                        }
+                        else
+                        {
+                            result = caltime(first, last);
+                        }
+                    }
+                    else if (start >= 8 && start < 17 && stop >= 17)
+                    {
+                        if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                        {
+
+                            result = caltime(first, "17:00");
+                        }
+                        else
+                        {
+                            result = caltime(first, "17:00");
+                        }
+
+                    }
+                    else if (start >= 17 && stop >= 17)
+                    {
+                        result = "0";
+                    }
+                }
+                else if (ndays >= 0)
+                {
+                    if (start < 8)
+                    {
+                        if (stop >= 8 && stop < 17)
+                        {
+                            if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = 540 + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime("08:00", last);
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                int add = 540 + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime("08:00", last);
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else
+                            {
+                                result = caltime("08:00", last);
+                                int add = 540 + Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                        }
+
+                        else if (stop < 8)
+                        {
+
+                            if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                result = (540 + ndays * 540).ToString();
+                            }
+                            else if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                result = (ndays * 540).ToString();
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = (540 + (ndays * 540)).ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = (ndays * 540).ToString();
+                            }
+                            else
+                            {
+                                result = (540 + (ndays * 540)).ToString();
+                            }
+                        }
+                        else if (stop >= 17)
+                        {
+                            if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = (540 + (ndays * 540)).ToString();
+                            }
+                            else if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = (540 + (ndays * 540)).ToString();
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = (540 + (ndays * 540)).ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = (540 + (ndays * 540)).ToString();
+                            }
+                            else
+                            {
+                                result = (1080 + (ndays * 540)).ToString();
+                            }
+                        }
+                    }
+                    else if (start >= 8 && start < 17)
+                    {
+                        if (stop >= 8 && stop < 17)
+                        {
+                            if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                string outcome = caltime(first, "17:00");
+                                int add = Int32.Parse(outcome) + (ndays * 540);
+                                result = add.ToString();
+
+                            }
+                            else if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                string output = caltime("08:00", last);
+                                int add = Int32.Parse(output) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                string outcome = caltime(first, "17:00");
+                                int add = Int32.Parse(outcome) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                string output = caltime("08:00", last);
+                                int add = Int32.Parse(output) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else
+                            {
+                                string outcome = caltime(first, "17:00");
+                                string output = caltime("08:00", last);
+                                int add = Int32.Parse(outcome) + Int32.Parse(output) + (ndays * 540);
+                                result = add.ToString();
+                            }
+
+                        }
+                        else if (stop < 8)
+                        {
+                            //----------------------------------------------------------------------------------------------------------------------------------------------------------------//
+                            if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = (ndays * 540);
+                                result = add.ToString();
+
+                            }
+                            else if ((PublicHolidays.Contains(begin)) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = (ndays * 540);
+                                result = add.ToString();
+
+                            }
+                            else if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime(first, "17:00");
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime(first, "17:00");
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else
+                            {
+                                result = caltime(first, "17:00");
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+
+                            }
+
+                        }
+                        else if (stop >= 17)
+                        {
+                            if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime(first, "17:00");
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                int add = 540 + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime(first, "17:00");
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                int add = 540 + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else
+                            {
+                                result = caltime(first, "17:00");
+                                int add = 540 + Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+
+
+
+                        }
+
+
+                    }
+                    else if (start >= 17)
+                    {
+                        if (stop >= 8 && stop < 17)
+                        {
+                            if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                result = caltime("08:00", last);
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                result = caltime("08:00", last);
+                                int add = (ndays * 540) + Int32.Parse(result);
+
+                                result = add.ToString();
+                            }
+                            else
+                            {
+                                result = caltime("08:00", last);
+                                int add = Int32.Parse(result) + (ndays * 540);
+                                result = add.ToString();
+                            }
+
+                        }
+                        else if (stop < 8)
+                        {
+
+                            result = (ndays * 540).ToString();
+
+                        }
+                        else if (stop >= 17)
+                        {
+                            if ((begin.DayOfWeek == DayOfWeek.Saturday || begin.DayOfWeek == DayOfWeek.Sunday) && (end.DayOfWeek != DayOfWeek.Saturday || end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = 540 + (ndays * 540);
+                                result = add.ToString();
+
+                            }
+                            else if ((end.DayOfWeek == DayOfWeek.Saturday || end.DayOfWeek == DayOfWeek.Sunday) && (begin.DayOfWeek != DayOfWeek.Saturday || begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+
+                                int add = (ndays * 540);
+                                result = add.ToString();
+
+                            }
+                            else if (PublicHolidays.Contains(end) && (begin.DayOfWeek != DayOfWeek.Saturday && begin.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                int add = (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else if (PublicHolidays.Contains(begin) && (end.DayOfWeek != DayOfWeek.Saturday && end.DayOfWeek != DayOfWeek.Sunday))
+                            {
+                                int add = (ndays * 540);
+                                result = add.ToString();
+                            }
+                            else
+                            {
+                                int add = 540 + (ndays * 540);
+                                result = add.ToString();
+
+                            }
+
+
+                        }
+
+
+                    }
+
+                }
+                return result;
+            }
+       }
+  }
+
