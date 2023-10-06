@@ -1,0 +1,569 @@
+using System;
+using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Xml.Linq;
+using System.Web;
+using System.Text;
+using System.IO;
+using System.Threading;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.Data.SqlClient;
+using Microsoft.VisualBasic.FileIO;
+using System.Text.RegularExpressions;
+
+namespace OMP_SLA_Reporting
+{
+
+    class ProcessData
+    {
+        List<string> IncNum = new List<string>();
+        List<string> TskNum = new List<string>();
+        List<string> TskPri = new List<string>();
+        List<string> IncSt = new List<string>();
+        List<string> TskSt = new List<string>();
+        List<string> TskAg = new List<string>();
+        List<string> TskAt = new List<string>();
+        List<string> TskCd = new List<string>();
+        List<string> TskCdD = new List<string>();
+        List<string> TskCld = new List<string>();
+        List<string> TskCldD = new List<string>();
+        List<string> IncCld = new List<string>();
+        List<string> ChIncN = new List<string>();
+        List<string> IncCldD = new List<string>();
+        List<string> IncSts = new List<string>();
+        List<string> SLAst = new List<string>();
+        List<string> listD = new List<string>();
+        List<string> listH = new List<string>();
+        List<string> listG = new List<string>();
+        List<string> listK = new List<string>();
+        List<string> listL = new List<string>();
+        List<string> listY = new List<string>();
+        List<string> listZ = new List<string>();
+        List<string> listJ = new List<string>();
+
+        List<string> IncPri = new List<string>();
+        List<string> PriDte = new List<string>();
+
+        List<string> CWTN = new List<string>();
+        List<string> SNTN = new List<string>();
+
+        List<string> InccPri = new List<string>();
+        List<string> PriDtte = new List<string>();
+        List<string> OrgPri = new List<string>();
+    
+    
+
+        public void AddtoLists()
+        {
+
+
+            if (filename != "")
+            {
+
+                using (TextFieldParser csvParser = new TextFieldParser(@filename))
+                {
+                    csvParser.CommentTokens = new string[] { "#" };
+                    csvParser.SetDelimiters(new string[] { "," });
+                    csvParser.HasFieldsEnclosedInQuotes = true;
+                    csvParser.ReadLine();
+                    using (var reader = new StreamReader(@filename))
+                    {
+
+                        while (!reader.EndOfStream)
+                        {
+
+
+                            var splits = reader.ReadLine().Split(',');
+
+                            IncNum.Add(splits[0].Trim());
+                            TskNum.Add(splits[1]);
+                            TskPri.Add(splits[2]);
+                            IncSt.Add(splits[3]);
+                            TskSt.Add(splits[4]);
+                            TskAg.Add(splits[5]);
+                            TskAt.Add(splits[6]);
+                            TskCd.Add(splits[7]);
+                            TskCdD.Add(splits[7]);
+                            TskCld.Add(splits[8]);
+                            TskCldD.Add(splits[8]);
+                            IncCld.Add(splits[9]);
+                            ChIncN.Add(splits[10]);
+                            IncCldD.Add(splits[11]);
+                            IncSts.Add(splits[12]);
+                        }
+
+                    }
+                }
+
+            }
+            if (filename1 != "")
+            {
+
+                using (TextFieldParser csvParser = new TextFieldParser(@filename1))
+                {
+                    csvParser.CommentTokens = new string[] { "#" };
+                    csvParser.SetDelimiters(new string[] { "," });
+                    csvParser.HasFieldsEnclosedInQuotes = true;
+                    csvParser.ReadLine();
+                    using (var reader = new StreamReader(@filename1))
+                    {
+
+                        while (!reader.EndOfStream)
+                        {
+
+
+                            var splits = reader.ReadLine().Split(',');
+                            IncPri.Add(splits[1].Trim());
+                            PriDte.Add(splits[2].Trim());
+                        
+
+
+                        }
+
+                    }
+                }
+
+            }
+              if (filename2 != "")
+            {
+
+                using (TextFieldParser csvParser = new TextFieldParser(@filename2))
+                {
+                    csvParser.CommentTokens = new string[] { "#" };
+                    csvParser.SetDelimiters(new string[] { "," });
+                    csvParser.HasFieldsEnclosedInQuotes = true;
+                    csvParser.ReadLine();
+                    using (var reader = new StreamReader(@filename2))
+                    {
+
+                        while (!reader.EndOfStream)
+                        {
+
+
+                            var splits = reader.ReadLine().Split(',');
+
+                            CWTN.Add(splits[0].Trim());
+                            SNTN.Add(splits[1].Trim());
+                        
+
+                        }
+
+                    }
+                }
+
+            }
+        
+          if (filename3 != "")
+            {
+
+                using (TextFieldParser csvParser = new TextFieldParser(@filename3))
+                {
+                    csvParser.CommentTokens = new string[] { "#" };
+                    csvParser.SetDelimiters(new string[] { "," });
+                    csvParser.HasFieldsEnclosedInQuotes = true;
+                    csvParser.ReadLine();
+                    using (var reader = new StreamReader(@filename3))
+                    {
+
+                        while (!reader.EndOfStream)
+                        {
+
+
+                            var splits = reader.ReadLine().Split(',');
+
+                            InccPri.Add(splits[0].Trim());
+                            PriDtte.Add(splits[1].Trim());
+                            OrgPri.Add(splits[2].Trim());
+                        
+
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+          
+        
+         
+
+        
+
+        public void opendialog()
+        {
+            Thread newThread = new Thread(new ThreadStart(ThreadMethod));
+            newThread.SetApartmentState(ApartmentState.STA);
+            newThread.Start();
+        }
+        public void opendialog1()
+        {
+            Thread newThread = new Thread(new ThreadStart(ThreadMethod1));
+            newThread.SetApartmentState(ApartmentState.STA);
+            newThread.Start();
+        }
+        public void opendialog2()
+        {
+            Thread newThread = new Thread(new ThreadStart(ThreadMethod2));
+            newThread.SetApartmentState(ApartmentState.STA);
+            newThread.Start();
+        }
+  public void opendialog3()
+        {
+            Thread newThread = new Thread(new ThreadStart(ThreadMethod3));
+            newThread.SetApartmentState(ApartmentState.STA);
+            newThread.Start();
+        }
+        private static string filename = "";
+        private static string filename1 = "";
+        private static string filename2 = "";
+        private static string filename3 = "";
+        static void ThreadMethod()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.ShowDialog();
+            filename = dlg.FileName;
+
+        }
+        static void ThreadMethod1()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.ShowDialog();
+            filename1 = dlg.FileName;
+
+        }
+        static void ThreadMethod2()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.ShowDialog();
+            filename2 = dlg.FileName;
+
+        }
+
+        public static void ThreadMethod3()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.ShowDialog();
+            filename3 = dlg.FileName;
+
+        }
+        public void IncClse()
+        {
+
+            for (int i = 1; i < IncNum.Count; i++)
+         
+                if (TskCldD[i]!="" && IncCldD[i] != "") { 
+                    if ((Convert.ToDateTime(TskCldD[i]) > Convert.ToDateTime(IncCldD[i])) && (IncSts[i].Trim()=="Closed"))
+                    {
+                        {
+                            //MessageBox.Show(IncCldD[i].Substring(0, 16));
+                        //IncSt[i] = "AC";
+                        TskCld[i] = IncCldD[i];
+                        TskCldD[i] = IncCldD[i];
+                    }
+       
+                }
+
+            }
+        }
+        public void AddToday()
+        {
+
+            for (int i = 1; i < IncNum.Count; i++)
+            {
+
+
+                if (TskCld[i].Trim() == "" || (!TskSt[i].Contains("Closed")))
+                {
+                   // MessageBox.Show("");
+
+                 TskCld[i] = DateTime.Now.ToString();
+                 //  TskCld[i] = "02/08/2023 07:00";
+
+
+
+                }
+
+            }
+        }
+        public void getCherwellNames()
+        {
+            for (int i = 0; i < TskAt.Count; i++)
+            {
+
+                for (int j = 0; j < SNTN.Count; j++)
+                {
+                    if (TskAg[i].Trim() == SNTN[j].Trim())
+                    {
+                        TskAg[i] = CWTN[j];
+
+                    }
+
+
+                }
+
+            }
+        }
+        public void CheckDtes()
+        {
+           
+            for (int i = 1; i < IncNum.Count; i++)
+            {
+
+
+               // if (!IncPri.Contains(TskNum[i].Trim())  && (TskPri[i].)
+                if (!IncPri.Contains(TskNum[i].Trim()) && TskSt[i].Contains("Closed") && (TskPri[i].Substring(0, 1).Contains("1") || TskPri[i].Substring(0, 1).Contains("2") || TskPri[i].Substring(0, 1).Contains("3")))
+                    {
+                        if (Convert.ToDateTime(TskCldD[i]) > DateTime.ParseExact("31/08/2023", "dd/MM/yyyy", null))
+                        {
+                         MessageBox.Show(TskNum[i]);
+                        }
+                    }
+
+
+                
+
+            }
+        }
+        public void UpdateDtes()
+        {
+            int cnt = 0;
+            for (int i = 1; i < IncNum.Count; i++)
+            {
+                for (int j = 1; j < IncPri.Count; j++)
+                {
+
+                   
+                    // if (!IncPri.Contains(TskNum[i].Trim())  && (TskPri[i].)
+                   //if ((TskNum[i] == IncPri[j]) && (TskPri[i].Trim().Contains("3") || TskPri[i].Trim() == "2" || TskPri[i] == "1"))
+                   if ((TskNum[i] == IncPri[j]) )
+                    {
+                    
+                        cnt++;
+                      //  MessageBox.Show(cnt.ToString());
+                        TskCd[i] = PriDte[j];
+                        TskCdD[i] = PriDte[j];
+                    }
+
+
+                }
+
+            }
+        }
+        public void UpdtePri()
+        {
+         
+            for (int i = 1; i < IncNum.Count; i++)
+            {
+                for (int j = 1; j < InccPri.Count; j++)
+                {
+
+
+                    // if (!IncPri.Contains(TskNum[i].Trim())  && (TskPri[i].)
+                    //  if ((TskNum[i] == IncPri[j]) && (TskPri[i].Trim().Contains("3") || TskPri[i].Trim() == "2" || TskPri[i] == "1"))
+                    if ((IncNum[i] == InccPri[j]) && (Convert.ToDateTime(TskCd[i]) < Convert.ToDateTime(PriDtte[j])))
+                    {
+
+                       
+                        //  MessageBox.Show(cnt.ToString());
+                        TskPri[i] = OrgPri[j];
+                    }
+
+
+                }
+
+            }
+        }
+        public void changePubtime()
+        {
+
+            for (int i = 1; i < IncNum.Count; i++)
+            {
+                if (IncCld[i].Trim() != "Accepted")
+                {
+                    TskCd[i] = calc.pubtime(TskCd[i]);
+                    TskCld[i] = calc.pubttime(TskCld[i]);
+               }
+            }
+        }
+        public void getTime()
+        {
+
+
+            SLAst = requestTime(TskCd);
+
+
+        }
+        public void WriteData()
+        {
+
+            StringBuilder csvcont = new StringBuilder();
+            csvcont.AppendLine(("Employee ID, Pay Period, Amount Paid"));
+
+            string filepath = @"C:\Users\x464388\OneDrive - Old Mutual\Documents\repotii\OMP Task SLA Report.CSV";
+            // string filepath = @"C:\Users\x470621\Documents\repotii\3pm Report.CSV";
+            try
+            {
+                File.AppendAllText(filepath, csvcont.ToString());
+
+                using (StreamWriter writer = new StreamWriter(new FileStream(filepath,
+                FileMode.Create, FileAccess.Write)))
+                {
+                    for (int i = 0; i < IncNum.Count; i++)
+                    {
+                        //MessageBox.Show(listL[24]);
+                        //listL[i].Trim();
+
+                        //if (listL[i].Contains("Nico") || listL[i].Trim().Contains("Charl") || listL[i].Contains("Andre") || listL[i].Contains("Brian") || listL[i].Contains("andre") || listL[i].Contains("nico") || listL[i].Contains("charl") || listL[i].Contains("brian"))
+                        //{
+                        //    //  listA.RemoveAt(i); listP.RemoveAt(i); listC.RemoveAt(i); listB.RemoveAt(i); listO.RemoveAt(i); listS.RemoveAt(i); listJ.RemoveAt(i); listE.RemoveAt(i); listZ.RemoveAt(i); listG.RemoveAt(i); listQ.RemoveAt(i); listH.RemoveAt(i); listI.RemoveAt(i); listD.RemoveAt(i); listK.RemoveAt(i); listM.RemoveAt(i); listL.RemoveAt(i);
+
+                        //}
+                    }
+
+                    // writer.WriteLine("TaskID,Problem Team,Category,Problem Status,TaskID,Date Created,Date Closed,Time taken To Resolve,Status,Task Team,Severity,Priority,ProblemID");
+                    // writer.WriteLine(listA[0].Trim() + "," + listP[0].Trim() + "," + listC[0].Trim() + "," + listB[0].Trim() + "," + listO[0].Trim() + "," + listS[0].Trim() + "," + listJ[0].Trim() + "," + listE[0].Trim() + "," + listZ[0].Trim() + "," + listG[0].Trim() + "," + listQ[0].Trim() + "," + listH[0].Trim() + "," + listI[0].Trim() + "," + listD[0].Trim() + "," + listK[0].Trim() + "," + listM[0].Trim() + "," + listOO[0].Trim());
+                    writer.WriteLine(IncNum[0].Trim() + "," + TskNum[0].Trim() + "," + IncSt[0].Trim() + "," + TskSt[0].Trim() + "," + TskPri[0].Trim().Substring(0, 1) + "," + TskAg[0].Trim() + "," + TskAt[0].Trim() + "," + SLAst[0].Trim() + "," + TskCd[0].Trim() + "," + TskCld[0].Trim() + "," + IncCld[0].Trim() + "," + ChIncN[0].Trim());
+                    for (int i = 1; i < IncNum.Count; i++)
+                    {
+                        //MessageBox.Show(listI[i]);
+
+                        //if (listL[i].Contains("Nico") || listL[i].Contains("Charl") || listL[i].Contains("Andre") || listL[i].Contains("Brian"))
+                        //{
+                        //    listA.RemoveAt(i); listP.RemoveAt(i); listC.RemoveAt(i); listB.RemoveAt(i); listO.RemoveAt(i); listS.RemoveAt(i); listJ.RemoveAt(i); listE.RemoveAt(i); listZ.RemoveAt(i); listG.RemoveAt(i); listQ.RemoveAt(i); listH.RemoveAt(i); listI.RemoveAt(i); listD.RemoveAt(i); listK.RemoveAt(i); listM.RemoveAt(i); 
+
+                        //}
+
+
+                        //  writer.WriteLine(listA[i].Trim() + "," + listP[i].Trim() + "," + listC[i].Trim() + "," + listB[i].Trim() + "," + listO[i].Trim() + "," + listS[i].Trim() + "," + listJ[i].Trim() + "," + listE[i].Trim() + "," + listZ[i].Trim() + "," + listG[i].Trim() + "," + listQ[i].Trim() + "," + listH[i].Trim() + "," + listI[i].Trim() + "," + listD[i].Trim() + "," + listK[i].Trim() + "," + listM[i].Trim() + "," + listOO[i].Trim());
+                        //writer.WriteLine(listA[i].Trim() + "," + listP[i].Trim() + "," + listC[i].Trim() + "," + listB[i].Trim() + "," + listO[i].Trim() + "," + listS[i].Trim() + "," + listJ[i].Trim() + "," + listE[i].Trim() + "," + listZ[i].Trim() + "," + listG[i].Trim() + "," + listH[i].Trim() + "," + listI[i].Trim() + "," + listD[i].Trim() + "," + listK[i].Trim() + "," + listM[i].Trim() + "," + listO[i].Trim());
+                        writer.WriteLine(IncNum[i].Trim() + "," + TskNum[i].Trim() + "," + IncSt[i].Trim() + "," + TskSt[i].Trim() + "," + TskPri[i].Trim().Substring(0, 1) + "," + TskAg[i].Trim() + "," + TskAt[i].Trim() + "," + SLAst[i].Trim() + "," + TskCdD[i].Trim() + "," + TskCldD[i].Trim() + "," + IncCld[i].Trim() + "," + ChIncN[i].Trim());
+
+
+
+
+                        // writer.WriteLine("Prod,Non Prod");
+                        //  writer.WriteLine(output);
+
+                    }
+                   
+
+                }
+
+            }
+
+            finally
+            {
+
+            }
+            MessageBox.Show("Find Report in Documents Folder");
+        }
+        int ndays;
+        string real;
+        string output = "";
+        int s, r, m, g, w, a;
+        DayCalculator calc = new DayCalculator();
+
+        public List<string> requestTime(List<string> listIN)
+        {
+            listY.Clear();
+            listY.Add("Incident Age");
+            for (int i = 1; i < listIN.Count; i++)
+            {
+                //MessageBox.Show(listA[i].Trim().Substring(0, 3));
+                if (IncCld[i] == "Accepted")
+                {
+                    real = listIN[i];
+
+                    //   MessageBox.Show(listE[i].Trim());
+                    m = Int32.Parse(listIN[i].Trim().Substring(0, 2));
+                    r = Int32.Parse(listIN[i].Trim().Substring(3).Substring(0, 2));
+                    s = Int32.Parse(listIN[i].Trim().Substring(6).Substring(0, 4));
+                    a = Int32.Parse(TskCld[i].Trim().Substring(0, 2));
+                    w = Int32.Parse(TskCld[i].Trim().Substring(3).Substring(0, 2));
+                    g = Int32.Parse(TskCld[i].Trim().Substring(6).Substring(0, 4));
+                    int real1 = 0;
+                    int real2 = 0;
+
+                    //MessageBox.Show(listE[i].Trim().Substring(6).Substring(0, 4).ToString());
+
+                    //if (TempJ[i].Contains("YES"))
+                    //{
+                    //    ndays = DayCalculator.Weekday(new DateTime(s, r, m), new DateTime(g, w, a));
+                    //    real1 = Convert.ToInt32(real.Substring(11).Substring(0, 5).Substring(0, 2));
+                    //    real2 = Convert.ToInt32(listE[i].Substring(11).Substring(0, 5).Substring(0, 2));
+                    //  //  borrowtime = DayCalculator.givetime1(ndays, real.Substring(11).Substring(0, 5), listP[i].Substring(11).Substring(0, 5), @real.Substring(0, 10), listP[i].Substring(0, 10), listN[i]);
+
+                    //    output = calc.givetime1(ndays, real.Substring(11).Substring(0, 5),(DateTime.Now.ToString()).Substring(11).Substring(0, 5), @real.Substring(0, 10), (DateTime.Now.ToString()).Substring(0, 10), listD[i]);
+
+
+                    //}
+                    //else
+                    //{
+                    // borrowtime = DayCalculator.givetime(ndays, real1, real2, real.Substring(11).Substring(0, 5), listP[i].Substring(11).Substring(0, 5), @real.Substring(0, 10), @listP[i].Substring(0, 10), listN[i]);
+                    ndays = DayCalculator.Weekday(new DateTime(s, r, m), new DateTime(g, w, a));
+                    //if (listD[i].Trim() == "437473")
+                    //{
+
+                    //    MessageBox.Show(g+" "+w+" "+a);
+                    //}
+                    real1 = Convert.ToInt32(real.Substring(11).Substring(0, 5).Substring(0, 2));
+                    real2 = Convert.ToInt32(TskCld[i].Substring(11).Substring(0, 5).Substring(0, 2));
+                    output = calc.givetime1(ndays,real.Substring(11).Substring(0, 5), (TskCld[i]).Substring(11).Substring(0, 5), @real.Substring(0, 10), (TskCld[i]).Substring(0, 10), listIN[i]);
+                    //output = ((Convert.ToDouble(output) / 540).ToString());
+                    listY.Add(output);
+                }
+                else
+                {
+
+                    real = listIN[i];
+
+                    //   MessageBox.Show(listE[i].Trim());
+                    m = Int32.Parse(listIN[i].Trim().Substring(0, 2));
+                    r = Int32.Parse(listIN[i].Trim().Substring(3).Substring(0, 2));
+                    s = Int32.Parse(listIN[i].Trim().Substring(6).Substring(0, 4));
+                    a = Int32.Parse(TskCld[i].Trim().Substring(0, 2));
+                    w = Int32.Parse(TskCld[i].Trim().Substring(3).Substring(0, 2));
+                    g = Int32.Parse(TskCld[i].Trim().Substring(6).Substring(0, 4));
+                    int real1 = 0;
+                    int real2 = 0;
+
+                    //MessageBox.Show(listE[i].Trim().Substring(6).Substring(0, 4).ToString());
+
+                    //if (TempJ[i].Contains("YES"))
+                    //{
+                    //    ndays = DayCalculator.Weekday(new DateTime(s, r, m), new DateTime(g, w, a));
+                    //    real1 = Convert.ToInt32(real.Substring(11).Substring(0, 5).Substring(0, 2));
+                    //    real2 = Convert.ToInt32(listE[i].Substring(11).Substring(0, 5).Substring(0, 2));
+                    //  //  borrowtime = DayCalculator.givetime1(ndays, real.Substring(11).Substring(0, 5), listP[i].Substring(11).Substring(0, 5), @real.Substring(0, 10), listP[i].Substring(0, 10), listN[i]);
+
+                    //    output = calc.givetime1(ndays, real.Substring(11).Substring(0, 5),(DateTime.Now.ToString()).Substring(11).Substring(0, 5), @real.Substring(0, 10), (DateTime.Now.ToString()).Substring(0, 10), listD[i]);
+
+
+                    //}
+                    //else
+                    //{
+                    // borrowtime = DayCalculator.givetime(ndays, real1, real2, real.Substring(11).Substring(0, 5), listP[i].Substring(11).Substring(0, 5), @real.Substring(0, 10), @listP[i].Substring(0, 10), listN[i]);
+                    ndays = DayCalculator.Weekdays(new DateTime(s, r, m), new DateTime(g, w, a), new DateTime(s, r, m), new DateTime(g, w, a));
+                    //if (listD[i].Trim() == "437473")
+                    //{
+
+                    //    MessageBox.Show(g+" "+w+" "+a);
+                    //}
+                    real1 = Convert.ToInt32(real.Substring(11).Substring(0, 5).Substring(0, 2));
+                    real2 = Convert.ToInt32(TskCld[i].Substring(11).Substring(0, 5).Substring(0, 2));
+                    output = calc.givetime(ndays, real1, real2, real.Substring(11).Substring(0, 5), (TskCld[i]).Substring(11).Substring(0, 5), @real.Substring(0, 10), (TskCld[i]).Substring(0, 10), listIN[i]);
+                    //output = ((Convert.ToDouble(output) / 540).ToString());
+                    listY.Add(output);
+
+                }
+            }
+            return listY;
+
+        }
+
+    }
+}
+    
